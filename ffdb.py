@@ -4,7 +4,7 @@ TABLES = dict()
 
 TABLES['restaurants'] = (
     "CREATE TABLE `restaurants` ("
-    "  `restaurant_id` INT PRIMARY KEY,"
+    "  `restaurant_id` INT PRIMARY KEY AUTO_INCREMENT,"
     "  `restaurant_name` varchar(64) NOT NULL,"
     "  `country` varchar(64),"
     "  `web_rating` FLOAT,"
@@ -28,10 +28,12 @@ TABLES['restaurant_food_type'] = (
 )
 
 
+# Clear tables and reset db
 def reset_db(cursor):
     for name, ddl in TABLES.iteritems():
         try:
             print "Creating table {}: ".format(name)
+            cursor.execute('DROP TABLE {}'.format(name))
             cursor.execute(ddl)
         except mysql.connector.Error as err:
             print(err.msg)
@@ -67,21 +69,29 @@ def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePri
     cursor.execute(query)
 
     nextRestaurantId = 0
-    for (lastRestaurantId) in cursor:
+    for (lastRestaurantId,) in cursor:
         # should only contain 1 row
+        if lastRestaurantId is None:
+            break
         nextRestaurantId = lastRestaurantId + 1
 
-    insertStatement = 'INSERT INTO restaurants (restaurant_name, country, web_rating, address, average_price, ' \
+    insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
                       'source_website)' \
-                      ' VALUES (%s, $s, %s, $s, %s, $s)'
+                      ' VALUES (NULL, %s, %s, %s, %s, %s, %s)'
 
     cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite))
-
+    cursor.close()
+    conn.commit()
+    conn.close()
     # TODO Process food type
 
 
+def db_test():
+    cursor, conn = init_db(True)
+    close_db(conn, cursor)
+    insert_restaurant("haha", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
+    insert_restaurant("haha2", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
+
 
 if __name__ == '__main__':
-    init_db(True)
-
-    print 'hi'
+    db_test()
