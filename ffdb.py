@@ -34,12 +34,24 @@ def reset_db(cursor):
     for name, ddl in TABLES.iteritems():
         try:
             print "Creating table {}: ".format(name)
-            cursor.execute('DROP TABLE {}'.format(name))
+            cursor.execute('DROP TABLE IF EXISTS {}'.format(name))
             cursor.execute(ddl)
         except mysql.connector.Error as err:
             print(err.msg)
         else:
             print("OK")
+
+
+def checkTableExists(cursor, tablename):
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM information_schema.tables
+        WHERE table_name = '{0}'
+        """.format(tablename.replace('\'', '\'\'')))
+    if cursor.fetchone()[0] == 1:
+        return True
+
+    return False
 
 
 def init_db(reset=False):
@@ -48,6 +60,7 @@ def init_db(reset=False):
                                    database='foodfinder')
 
     cursor = conn.cursor(prepared=True)
+
     if reset:
         reset_db(cursor)
 
@@ -95,6 +108,7 @@ def insert_restaurant_batch(restaurantList):
                           'source_website, food_type)' \
                           ' VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite, foodType))
+        print name, " Added"
 
     cursor.close()
     conn.commit()
@@ -130,7 +144,7 @@ def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePri
 def db_test():
     cursor, conn = init_db(True)
     close_db(conn, cursor)
-    insert_restaurant_batch([{'name':'btest', 'country':'c1', 'rating':0.5, 'address':'here',
+    insert_restaurant_batch([{'name':'bbtest', 'country':'c1', 'rating':0.5, 'address':'here',
                               'averagePrice':222, 'sourceSite':'www.google.com', 'foodType':'japanese,korean'},
                              {'name': 'WHAT', 'country': 'c2', 'rating': 0.5, 'address': 'here',
                               'averagePrice': 222, 'sourceSite': 'www.google.com', 'foodType': 'japanese,korean'}

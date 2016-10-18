@@ -1,5 +1,6 @@
 from pyquery import PyQuery as pq
 import urllib2
+import ffdb as db
 
 #address, rating, country, food_type, name, price
 
@@ -33,7 +34,10 @@ def is_hungrygowhere_review(doc):
 def extract_numvote(doc):
     res = doc(".number-vote")
     vote = res.text()
+    vote = vote.split('%')[0]
     numvoter = res.next().text().split()[0]
+    vote = float(vote) / 100
+    numvoter = int(numvoter)
     return vote, numvoter
 
 
@@ -50,12 +54,14 @@ def extract_address(doc):
 
 
 def extract_foodtypes(doc):
-    reslist = []
+    resstring = ''
     res1 = doc(".module-information")
     res2 = res1("span[itemprop='servesCuisine']")
     for i in range(0, res2.size()):
-        reslist.append(pq(res2[i]).text())
-    return reslist
+        resstring += pq(res2[i]).text()
+        if i + 1 < res2.size():
+            resstring += ','
+    return resstring
 
 
 def extract_price(doc):
@@ -67,22 +73,44 @@ def extract_price(doc):
         if price.__len__() > 1:
             return price[1]
 
-def test():
-    url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
-    #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
+
+def extract_restaurant(url):
     content = get_page(url)
     d = pq(content)
+    if not is_hungrygowhere_review(d):
+        return None
 
     foodname = extract_food_title(d)
     price = extract_price(d)
     address = extract_address(d)
     rating, numvoter = extract_numvote(d)
     types = extract_foodtypes(d)
-    print "Food: ", foodname
-    print "Price: $", price
-    print "Address: ", address
-    print "Food type: ", types
-    print "Rating: ", rating, " based on ", numvoter, "votes"
+    res = {'name': foodname, 'country' : 'Singapore', 'rating': rating, 'address': address,
+            'averagePrice': int(price), 'sourceSite': url, 'foodType': types}
+
+    return res
+
+
+def extract_restaurants(urls):
+    restaurants = []
+    for i in range(0, urls.__len__()):
+        res = extract_restaurant(urls[i])
+        if res is not None:
+            restaurants.append(res)
+    return restaurants
+
+
+def test():
+    urls = ["http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/",
+            "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"]
+    #url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
+    #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
+
+    resList = extract_restaurants(urls)
+    cursor, conn = db.init_db(True)
+    db.close_db(conn, cursor)
+    db.insert_restaurant_batch(resList)
+
 
 if __name__ == '__main__':
     test()
