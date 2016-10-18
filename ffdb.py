@@ -10,6 +10,7 @@ TABLES['restaurants'] = (
     "  `web_rating` FLOAT,"
     "  `address` varchar(128),"
     "  `average_price` FLOAT,"
+    "  `food_type` VARCHAR(256),"
     "  `source_website` varchar(256)"
     ") ENGINE=InnoDB")
 
@@ -58,10 +59,11 @@ def close_db(conn, cursor):
     conn.close()
 
 
-def standard_clean_name(str):
-    str = str.lower()
+def standard_clean_name(inString):
+    inString = inString.lower()
+    inString = ','.join([x.strip() for x in inString.split(',')])
 
-    return str
+    return inString
 
 def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePrice=0.0, foodType='', sourceSite="-"):
     cursor, conn = init_db()
@@ -75,21 +77,24 @@ def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePri
             break
         nextRestaurantId = lastRestaurantId + 1
 
-    insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
-                      'source_website)' \
-                      ' VALUES (NULL, %s, %s, %s, %s, %s, %s)'
+    country = standard_clean_name(country)
+    foodType = standard_clean_name(foodType)
 
-    cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite))
+    insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
+                      'source_website, food_type)' \
+                      ' VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)'
+
+    cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite, foodType))
     cursor.close()
     conn.commit()
     conn.close()
-    # TODO Process food type
+
 
 
 def db_test():
     cursor, conn = init_db(True)
     close_db(conn, cursor)
-    insert_restaurant("haha", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
+    insert_restaurant("haha", "sg", 5, "aaa", 0.5, "foodone, foodtwo a ", "www.google.com")
     insert_restaurant("haha2", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
 
 
