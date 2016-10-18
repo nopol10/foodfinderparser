@@ -33,7 +33,7 @@ def is_hungrygowhere_review(doc):
 def extract_numvote(doc):
     res = doc(".number-vote")
     vote = res.text()
-    numvoter = res.next().text()
+    numvoter = res.next().text().split()[0]
     return vote, numvoter
 
 
@@ -73,7 +73,16 @@ def test():
     content = get_page(url)
     d = pq(content)
 
-    print extract_price(d)
+    foodname = extract_food_title(d)
+    price = extract_price(d)
+    address = extract_address(d)
+    rating, numvoter = extract_numvote(d)
+    types = extract_foodtypes(d)
+    print "Food: ", foodname
+    print "Price: $", price
+    print "Address: ", address
+    print "Food type: ", types
+    print "Rating: ", rating, " based on ", numvoter, "votes"
 
 if __name__ == '__main__':
     test()
