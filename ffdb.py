@@ -65,6 +65,42 @@ def standard_clean_name(inString):
 
     return inString
 
+def insert_restaurant_batch(restaurantList):
+
+    # name="-", country="-", rating=0.0, address="-", averagePrice=0.0, foodType='', sourceSite="-"
+
+    cursor, conn = init_db()
+    query = 'SELECT MAX(restaurant_id) FROM restaurants'
+    cursor.execute(query)
+
+    nextRestaurantId = 0
+    for (lastRestaurantId,) in cursor:
+        # should only contain 1 row
+        if lastRestaurantId is None:
+            break
+        nextRestaurantId = lastRestaurantId + 1
+
+    for restaurant in restaurantList:
+        name = restaurant['name']
+        country = restaurant['country']
+        rating = restaurant['rating']
+        address = restaurant['address']
+        averagePrice = restaurant['averagePrice']
+        sourceSite = restaurant['sourceSite']
+        foodType = restaurant['foodType']
+        country = standard_clean_name(country)
+        foodType = standard_clean_name(foodType)
+
+        insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
+                          'source_website, food_type)' \
+                          ' VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite, foodType))
+
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
 def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePrice=0.0, foodType='', sourceSite="-"):
     cursor, conn = init_db()
     query = 'SELECT MAX(restaurant_id) FROM restaurants'
@@ -94,8 +130,13 @@ def insert_restaurant(name="-", country="-", rating=0.0, address="-", averagePri
 def db_test():
     cursor, conn = init_db(True)
     close_db(conn, cursor)
-    insert_restaurant("haha", "sg", 5, "aaa", 0.5, "foodone, foodtwo a ", "www.google.com")
-    insert_restaurant("haha2", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
+    insert_restaurant_batch([{'name':'btest', 'country':'c1', 'rating':0.5, 'address':'here',
+                              'averagePrice':222, 'sourceSite':'www.google.com', 'foodType':'japanese,korean'},
+                             {'name': 'WHAT', 'country': 'c2', 'rating': 0.5, 'address': 'here',
+                              'averagePrice': 222, 'sourceSite': 'www.google.com', 'foodType': 'japanese,korean'}
+                             ])
+    # insert_restaurant("haha", "sg", 5, "aaa", 0.5, "foodone, foodtwo a ", "www.google.com")
+    # insert_restaurant("haha2", "sg", 5, "aaa", 0.5, "kkk", "www.google.com")
 
 
 if __name__ == '__main__':
