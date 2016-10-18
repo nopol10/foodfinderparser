@@ -71,7 +71,7 @@ def extract_price(doc):
     if innertexts.__len__() > 0 and innertexts[0][0] == '$':
         price = innertexts[0].split('$')
         if price.__len__() > 1:
-            return price[1]
+            return float(price[1])
 
 
 def extract_restaurant(url):
@@ -86,7 +86,7 @@ def extract_restaurant(url):
     rating, numvoter = extract_numvote(d)
     types = extract_foodtypes(d)
     res = {'name': foodname, 'country' : 'Singapore', 'rating': rating, 'address': address,
-            'averagePrice': int(price), 'sourceSite': url, 'foodType': types}
+            'averagePrice': price, 'sourceSite': url, 'foodType': types}
 
     return res
 
