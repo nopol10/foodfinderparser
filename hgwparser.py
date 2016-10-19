@@ -44,7 +44,8 @@ def extract_numvote(doc):
 
 
 def extract_food_title(doc):
-    return doc("h1[class='rs-regular-sm']").text()
+    return doc("h1[class='rs-regular-sm']").prev().attr("content")
+    # return doc("h1[class='rs-regular-sm']").text()
 
 
 def extract_address(doc):
