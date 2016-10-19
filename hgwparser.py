@@ -46,28 +46,22 @@ def extract_food_title(doc):
 
 
 def extract_address(doc):
-    res1 = doc(".module-information")
-    res2 = res1(".address")
-    if res2.size() <= 0:
-        return ""
-    return pq(res2[0]).text()
+    return doc(".module-information .address .inner").text()
 
 
 def extract_foodtypes(doc):
     resstring = ''
-    res1 = doc(".module-information")
-    res2 = res1("span[itemprop='servesCuisine']")
-    for i in range(0, res2.size()):
-        resstring += pq(res2[i]).text()
-        if i + 1 < res2.size():
+    res1 = doc(".module-information span[itemprop='servesCuisine']")
+    for i in range(0, res1.size()):
+        resstring += pq(res1[i]).text()
+        if i + 1 < res1.size():
             resstring += ','
     return resstring
 
 
 def extract_price(doc):
-    res1 = doc(".module-information")
-    res2 = (res1("meta[itemprop='priceRange']").next())("div[class='inner']")
-    innertexts = res2.text().split()
+    res1 = (doc(".module-information meta[itemprop='priceRange']").next())("div[class='inner']")
+    innertexts = res1.text().split()
     if innertexts.__len__() > 0 and innertexts[0][0] == '$':
         price = innertexts[0].split('$')
         if price.__len__() > 1:
@@ -94,21 +88,33 @@ def extract_restaurant(url):
 def extract_restaurants(urls):
     restaurants = []
     for i in range(0, urls.__len__()):
+        print 'processing', i+1, 'of', urls.__len__(), 'urls..'
         res = extract_restaurant(urls[i])
         if res is not None:
             restaurants.append(res)
+            print res
     return restaurants
 
 
+def get_urls_from_file(filename):
+    f = open(filename, 'r')
+    urls = []
+    for line in f:
+        urls.append(line)
+    f.close()
+    return urls
+
+
 def test():
-    urls = ["http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/",
-            "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"]
+    urls = get_urls_from_file('urls.txt')
     #url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
     #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
 
+    print 'extracting from', urls.__len__(), 'urls'
     resList = extract_restaurants(urls)
     cursor, conn = db.init_db(True)
     db.close_db(conn, cursor)
+    print 'inserting to db..'
     db.insert_restaurant_batch(resList)
 
 
