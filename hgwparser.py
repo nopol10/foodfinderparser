@@ -1,4 +1,5 @@
 from pyquery import PyQuery as pq
+from multiprocessing.dummy import Pool as ThreadPool
 import urllib2
 import ffdb as db
 
@@ -20,6 +21,7 @@ def get_page(url):
         page = urllib2.urlopen(req)
     except urllib2.HTTPError, e:
         print e.fp.read()
+        return None
 
     return page.read()
 
@@ -42,7 +44,7 @@ def extract_numvote(doc):
 
 
 def extract_food_title(doc):
-    return doc("h1").text()
+    return doc("h1[class='rs-regular-sm']").text()
 
 
 def extract_address(doc):
@@ -70,6 +72,8 @@ def extract_price(doc):
 
 def extract_restaurant(url):
     content = get_page(url)
+    if content is None:
+        return None
     d = pq(content)
     if not is_hungrygowhere_review(d):
         return None
@@ -85,14 +89,11 @@ def extract_restaurant(url):
     return res
 
 
-def extract_restaurants(urls):
-    restaurants = []
-    for i in range(0, urls.__len__()):
-        print 'processing', i+1, 'of', urls.__len__(), 'urls..'
-        res = extract_restaurant(urls[i])
-        if res is not None:
-            restaurants.append(res)
-            print res
+def extract_restaurants(urls, numthread = 4):
+    pool = ThreadPool(numthread)
+    restaurants = pool.map(extract_restaurant, urls)
+    pool.close()
+    pool.join()
     return restaurants
 
 
@@ -111,7 +112,7 @@ def test():
     #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
 
     print 'extracting from', urls.__len__(), 'urls'
-    resList = extract_restaurants(urls)
+    resList = extract_restaurants(urls, 100)
     cursor, conn = db.init_db(True)
     db.close_db(conn, cursor)
     print 'inserting to db..'

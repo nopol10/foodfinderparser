@@ -5,10 +5,10 @@ TABLES = dict()
 TABLES['restaurants'] = (
     "CREATE TABLE `restaurants` ("
     "  `restaurant_id` INT PRIMARY KEY AUTO_INCREMENT,"
-    "  `restaurant_name` varchar(64) NOT NULL,"
-    "  `country` varchar(64),"
+    "  `restaurant_name` varchar(256) NOT NULL,"
+    "  `country` varchar(256),"
     "  `web_rating` FLOAT,"
-    "  `address` varchar(128),"
+    "  `address` varchar(256),"
     "  `average_price` FLOAT,"
     "  `food_type` VARCHAR(256),"
     "  `source_website` varchar(256)"
@@ -17,14 +17,14 @@ TABLES['restaurants'] = (
 TABLES['food_type_id'] = (
     "CREATE TABLE `food_type_id` ("
     "   `id` INT PRIMARY KEY, "
-    "   `food_type` VARCHAR(32) "
+    "   `food_type` VARCHAR(256) "
     ") ENGINE=InnoDB"
 )
 
 TABLES['restaurant_food_type'] = (
     "CREATE TABLE `restaurant_food_type` ("
     "   `id` INT PRIMARY KEY, "
-    "   `food_type` VARCHAR(32) "
+    "   `food_type` VARCHAR(256) "
     ") ENGINE=InnoDB"
 )
 
@@ -94,6 +94,8 @@ def insert_restaurant_batch(restaurantList):
         nextRestaurantId = lastRestaurantId + 1
 
     for restaurant in restaurantList:
+        if restaurant is None:
+            continue
         name = restaurant['name']
         country = restaurant['country']
         rating = restaurant['rating']
@@ -107,8 +109,9 @@ def insert_restaurant_batch(restaurantList):
         insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
                           'source_website, food_type)' \
                           ' VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)'
+        print restaurant, "Added"
         cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite, foodType))
-        print name, " Added"
+
 
     cursor.close()
     conn.commit()
