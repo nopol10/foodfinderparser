@@ -49,7 +49,7 @@ def extract_food_title(doc):
 
 
 def extract_address(doc):
-    return doc(".module-information .address .inner").text()
+    return doc(".module-information .address .inner span[itemprop='streetAddress']").attr('title')
 
 
 def extract_foodtypes(doc):
@@ -117,6 +117,7 @@ def test():
     cursor, conn = db.init_db(True)
     db.close_db(conn, cursor)
     print 'inserting to db..'
+    # print resList
     db.insert_restaurant_batch(resList)
 
 
