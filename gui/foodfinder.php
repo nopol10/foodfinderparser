@@ -13,6 +13,10 @@
     <!-- Bootstrap core CSS -->
     <link href="./docs/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!--Foodfinder CSS-->
+    <link href="https://fonts.googleapis.com/css?family=Lobster+Two" rel="stylesheet">
+    <link href="./docs/dist/css/ffstyle.css" rel="stylesheet">
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="./docs/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
@@ -56,16 +60,15 @@
     </div>
 
     <div class="container">
-        <label class="sr-only" for="exampleInputEmail3">Search:</label>
-        <input type="text" name="search" id="search">
-        <button id="searchButton" type="button" onclick="sendToPhp();">I'm Hungry!</button>
+        <input type="text" name="search" class="form-control ff-searchbar" placeholder="Enter 1 word that fits what you want to eat" id="search">
+        <button id="searchButton" class="btn" type="button" onclick="sendToPhp();">I'm Hungry!</button>
         <!-- <select class="form-control">
           <option>Name</option>
           <option>Country</option>
         </select> -->
     </div>
 
-    <div id='restaurant-container' class="container">
+    <div id='restaurant-container'>
 
     </div>
 </div><!-- /.container -->

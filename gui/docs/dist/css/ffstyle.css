@@ -1,0 +1,63 @@
+.navbar-brand {
+    font-family: 'Lobster Two', cursive;
+}
+
+h1 {
+    font-family: 'Lobster Two', cursive;
+    font-size: 64px;
+    color: #0082a4;
+}
+
+.ff-searchbar {
+    width:60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom:5px;
+}
+.container {
+    text-align: center;
+}
+
+.restaurant-listing {
+    position:relative;
+    border: solid 1px #5e5e5e;
+    border-radius: 10px;
+    margin: 10px 0 10px 0;
+    padding: 10px;
+    text-align: left;
+}
+
+.restaurant-listing:hover {
+    -webkit-transition: border-color 0.8s;
+    -moz-transition: border-color 0.8s;
+    -ms-transition: border-color 0.8s;
+    -o-transition: border-color 0.8s;
+    transition-property: border-color, background-color;
+    transition-duration: 0.8s, 0.5s;
+    transition-timing-function: ease-out;
+    border-color: #4bb00f;
+    background-color: #e3ffc7;
+}
+
+.res-name {
+    font-size:20px;
+}
+.res-country {
+
+}
+.res-webrating {
+    float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-right: 30px;
+    font-size: 42px;
+    padding-top: 24px;
+    color: #00CC00;
+}
+.res-address {
+
+}
+.res-price {
+
+}

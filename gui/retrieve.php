@@ -2,16 +2,17 @@
 /**
  * @param $name
  */
-function displayResult($type) {
+function displayResult($type)
+{
     // Connect to database server
     $conn = new mysqli("localhost", "foodfinder", "foodfinder", "foodfinder");
 
     // Select database
 
     // Process food type
-    $type = "%".strtolower($type)."%";
+    $type = "%" . strtolower($type) . "%";
     // SQL query
-    $strSQL = "SELECT restaurant_name, country, web_rating, address, average_price FROM restaurants WHERE food_type LIKE ?
+    $strSQL = "SELECT restaurant_name, country, web_rating, address, average_price FROM restaurants WHERE food_type LIKE ? ORDER BY web_rating DESC 
                LIMIT 10";
 
 
@@ -24,14 +25,21 @@ function displayResult($type) {
         $outArray = array();
         while ($statement->fetch()) {
             $resCountry = ucfirst($resCountry);
-            $outArray[] = array('name'=>$resName, 'country'=>$resCountry, 'webrating'=>$resWebRating, 'address'=>$resAddress, 'price'=>$resPrice);
+            $resWebRating = $resWebRating * 100;
+            $resPrice = '$' . $resPrice;
+            $outArray[] = array('name' => $resName, 'country' => $resCountry, 'webrating' => $resWebRating, 'address' => $resAddress, 'price' => $resPrice);
             echo "<div class='restaurant-listing'>
                     <div class='res-name'>$resName</div>
                     <div class='res-country'>$resCountry</div>
                     <div class='res-webrating'>$resWebRating</div>
                     <div class='res-address'>$resAddress</div>
-                    <div class='res-price'>$resPrice</div>
-</div>";
+                    ";
+            if (strlen($resPrice) > 1) {
+                echo "<div class='res-price'>$resPrice</div>";
+            } else {
+                echo "<div class='res-price invisible'>0</div>";
+            }
+            echo "</div>";
         }
 //        echo json_encode($outArray);
     }
