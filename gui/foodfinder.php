@@ -67,7 +67,7 @@
 
 		<!--	<?php
 			
-		function displayResult($result){
+		function displayResult($name){
 			// Connect to database server
 			mysql_connect("localhost", "foodfinder", "foodfinder");
 
