@@ -5,12 +5,12 @@ TABLES = dict()
 TABLES['restaurants'] = (
     "CREATE TABLE `restaurants` ("
     "  `restaurant_id` INT PRIMARY KEY AUTO_INCREMENT,"
-    "  `restaurant_name` varchar(256) NOT NULL,"
+    "  `restaurant_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,"
     "  `country` varchar(256),"
     "  `web_rating` FLOAT,"
-    "  `address` varchar(256),"
+    "  `address` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,"
     "  `average_price` FLOAT,"
-    "  `food_type` VARCHAR(256),"
+    "  `food_type` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,"
     "  `source_website` varchar(256)"
     ") ENGINE=InnoDB")
 

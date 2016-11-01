@@ -1,0 +1,60 @@
+from pyquery import PyQuery as pq
+import IParser
+from urlparse import urlparse
+# address, rating, country, food_type, name, price
+
+
+class ZomatoParser(IParser.IParser):
+    def __init__(self, content, url):
+        self.doc = pq(content)
+        self.url = url
+
+    def is_review(self):
+        res = self.doc("meta[property='og:type']")
+        for i in range(0, res.size()):
+            if res.attr("content") == "zomatocom:restaurant":
+                return True
+        return False
+
+    def extract_price(self):
+        res = self.doc("span[itemprop='priceRange']").text()
+        res = res.split()
+        if res.__len__() <= 0:
+            return 0.0
+        if res[0] == "Average":
+            price_str = res[1]
+            price = ''
+            for i in range(0, price_str.__len__()):
+                if price_str[i].isdigit():
+                    price += price_str[i]
+            return float(price)
+        return 0.0
+
+    def extract_foodtypes(self):
+        return self.doc("div[class='res-info-cuisines clearfix']").text()
+
+
+    def extract_address(self):
+        res = self.doc("div[class='borderless res-main-address']").text()
+        return res
+
+    def extract_food_title(self):
+        res = self.doc("h1[itemprop='name']").text()
+        return res
+
+    def extract_numvote(self):
+        try:
+            res = self.doc("div[itemprop='ratingValue']").text()
+            vote = res.split('/')[0]
+            numvoter = self.doc("span[itemprop='ratingCount']").text()
+            vote = float(vote) / 5.0
+            numvoter = int(numvoter)
+        except:
+            return 0.0, 0
+        return vote, numvoter
+
+    def extract_country(self):
+        path = urlparse(self.url).path
+        country = path.split('/')[1]
+        country = country.replace('-', ' ')
+        return country
