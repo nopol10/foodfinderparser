@@ -10,6 +10,11 @@ class ZomatoParser(IParser.IParser):
         self.url = url
 
     def is_review(self):
+        s = self.url.split('/')
+        url_last = s[-1].strip()
+        if url_last == "reviews" or url_last == "menu" or url_last == "photos":
+            return False
+
         res = self.doc("meta[property='og:type']")
         for i in range(0, res.size()):
             if res.attr("content") == "zomatocom:restaurant":
@@ -54,11 +59,13 @@ class ZomatoParser(IParser.IParser):
         return vote, numvoter
 
     def extract_country(self):
-        geolocator = Nominatim()
-        latitude = self.doc("meta[property='place:location:latitude']").attr("content")
-        longtitude = self.doc("meta[property='place:location:longitude']").attr("content")
-        location = geolocator.reverse(latitude+', ' + longtitude)
-        s = location.address.split(',')
-        print location.address
-        country = s[s.__len__() -1 : s.__len__()][0]
-        return country
+        try:
+            geolocator = Nominatim()
+            latitude = self.doc("meta[property='place:location:latitude']").attr("content")
+            longtitude = self.doc("meta[property='place:location:longitude']").attr("content")
+            location = geolocator.reverse(latitude+', ' + longtitude)
+            s = location.address.split(',')
+            country = s[s.__len__() -1 : s.__len__()][0]
+            return country.strip()
+        except:
+            return ""

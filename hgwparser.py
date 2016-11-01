@@ -58,10 +58,13 @@ class HgwParser(IParser.IParser):
         return vote, numvoter
 
     def extract_country(self):
-        geolocator = Nominatim()
-        latitude = self.doc("meta[itemprop='latitude']").attr("content")
-        longtitude = self.doc("meta[itemprop='longitude']").attr("content")
-        location = geolocator.reverse(latitude + ', ' + longtitude)
-        s = location.address.split(',')
-        country = s[s.__len__() - 1: s.__len__()][0]
-        return country
+        try:
+            geolocator = Nominatim()
+            latitude = self.doc("meta[itemprop='latitude']").attr("content")
+            longtitude = self.doc("meta[itemprop='longitude']").attr("content")
+            location = geolocator.reverse(latitude + ', ' + longtitude)
+            s = location.address.split(',')
+            country = s[s.__len__() - 1: s.__len__()][0]
+            return country.strip()
+        except:
+            return ""

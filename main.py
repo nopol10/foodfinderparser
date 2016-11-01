@@ -21,7 +21,7 @@ def get_page(url):
     try:
         page = urllib2.urlopen(req)
     except urllib2.HTTPError, e:
-        print e.fp.read()
+        print "Error urlopen"
         return None
 
     return page.read()
@@ -96,8 +96,8 @@ def main():
 
 
 def test():
-    url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
+    url = "https://www.zomato.com/id/selangor/papparich-taman-seri-gombak/menu"
     extract_restaurant(url)
 
 if __name__ == '__main__':
-    test()
+    main()
