@@ -1,4 +1,4 @@
-from pyquery import PyQuery as pq
+
 from multiprocessing.dummy import Pool as ThreadPool
 import ffdb as db
 import hgwparser as hgw
@@ -96,7 +96,7 @@ def main():
 
 
 def test():
-    url = "https://www.zomato.com/kuala-lumpur/no-black-tie-bukit-bintang?ref_type=subzone&ref_id=162141"
+    url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
     extract_restaurant(url)
 
 if __name__ == '__main__':

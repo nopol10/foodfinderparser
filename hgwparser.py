@@ -1,10 +1,11 @@
 from pyquery import PyQuery as pq
 import IParser
+from geopy.geocoders import Nominatim
 # address, rating, country, food_type, name, price
 
 
 class HgwParser(IParser.IParser):
-    def __init__(self, content):
+    def __init__(self, content, url):
         self.doc = pq(content)
 
     def is_review(self):
@@ -57,4 +58,10 @@ class HgwParser(IParser.IParser):
         return vote, numvoter
 
     def extract_country(self):
-        return "Singapore"
+        geolocator = Nominatim()
+        latitude = self.doc("meta[itemprop='latitude']").attr("content")
+        longtitude = self.doc("meta[itemprop='longitude']").attr("content")
+        location = geolocator.reverse(latitude + ', ' + longtitude)
+        s = location.address.split(',')
+        country = s[s.__len__() - 1: s.__len__()][0]
+        return country

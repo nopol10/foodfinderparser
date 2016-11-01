@@ -1,6 +1,6 @@
 from pyquery import PyQuery as pq
 import IParser
-from urlparse import urlparse
+from geopy.geocoders import Nominatim
 # address, rating, country, food_type, name, price
 
 
@@ -54,7 +54,11 @@ class ZomatoParser(IParser.IParser):
         return vote, numvoter
 
     def extract_country(self):
-        path = urlparse(self.url).path
-        country = path.split('/')[1]
-        country = country.replace('-', ' ')
+        geolocator = Nominatim()
+        latitude = self.doc("meta[property='place:location:latitude']").attr("content")
+        longtitude = self.doc("meta[property='place:location:longitude']").attr("content")
+        location = geolocator.reverse(latitude+', ' + longtitude)
+        s = location.address.split(',')
+        print location.address
+        country = s[s.__len__() -1 : s.__len__()][0]
         return country
