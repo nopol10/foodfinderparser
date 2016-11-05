@@ -11,22 +11,17 @@
     <title>Food Finder</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./docs/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!--Foodfinder CSS-->
     <link href="https://fonts.googleapis.com/css?family=Lobster+Two" rel="stylesheet">
-    <link href="./docs/dist/css/ffstyle.css" rel="stylesheet">
+    <link href="dist/css/ffstyle.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="./docs/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="starter-template.css" rel="stylesheet">
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]>
-    <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="./docs/assets/js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -52,21 +47,23 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="starter-template background-banner">
+    <h1 class="title">Food Finder</h1>
+    <h2 class="">Find restaurants based on your preferences.</h2>
+</div>
+<div class="container main-panel">
+        <button class="btn-lg btn btn-success" type="button" onclick="searchByName(true);">Show Food Near Me!</button>
+        <button class="btn-lg btn btn-primary" type="button" onclick="showSearchBar();">I want something specific!</button>
 
-    <div class="starter-template">
-        <h1>Food Finder</h1>
-        <p class="lead">Search for restaurants according to your preferences.</p>
-    </div>
+        <div id="search-panel">
+            <input type="text" name="search" class="form-control ff-searchbar" placeholder="Enter a type of food, location or name" id="search">
+            <button id="searchButton" class="btn btn-success" type="button" onclick="searchByName(false);">I'm Hungry!</button>
+        </div>
 
-    <div class="container">
-        <input type="text" name="search" class="form-control ff-searchbar" placeholder="Enter 1 word that fits what you want to eat" id="search">
-        <button id="searchButton" class="btn" type="button" onclick="sendToPhp();">I'm Hungry!</button>
         <!-- <select class="form-control">
           <option>Name</option>
           <option>Country</option>
         </select> -->
-    </div>
 
     <div id='restaurant-container'>
 
@@ -79,23 +76,11 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script>
-    function sendToPhp() {
-        var search = document.getElementById("search").value;
-        document.getElementById("search").value = "";
-        $.ajax({
-            type: "POST",
-            url: "retrieve.php",
-            data: {name: search}
-        }).done(function (msg) {
-            $('#restaurant-container').html(msg);
-//	  alert( "Data Saved: " + msg );
-        });
 
-    }
 </script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="./dist/js/bootstrap.min.js"></script>
-<script src="./docs/dist/js/scripts.js"></script>
+<script src="dist/js/scripts.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="./assets/js/ie10-viewport-bug-workaround.js"></script>
 </body>
