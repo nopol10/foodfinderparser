@@ -66,4 +66,12 @@ class TripAdvParser(IParser.IParser):
         return vote, numvoter
 
     def extract_country(self):
-        return self.doc("div[class='detail'] span[class='country-name']").text()
+        res = self.doc("span[class='country-name']")
+        country = ""
+        for i in range(0, res.size()):
+            sub = pq(res[i])
+            country = sub.text() if sub.text() != "" else sub.attr("content")
+            if country != "":
+                break
+        print country
+        return country
