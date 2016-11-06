@@ -3,12 +3,13 @@ from multiprocessing.dummy import Pool as ThreadPool
 import ffdb as db
 import hgwparser as hgw
 import zomatoparser as zomato
+import  tripadvparser as tripadv
 import urllib2
 from urlparse import urlparse
 
 HGWDOMAIN = "www.hungrygowhere.com"
 ZOMATODOMAIN = "www.zomato.com"
-
+TRIPADVISORDOMAIN = "www.tripadvisor.com"
 
 def get_page(url):
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -43,6 +44,8 @@ def get_parser(url, content):
         return hgw.HgwParser(content, url)
     if host == ZOMATODOMAIN:
         return zomato.ZomatoParser(content, url)
+    if TRIPADVISORDOMAIN in host:
+        return tripadv.TripAdvParser(content, url)
 
     print host, 'invalid'
     return None
@@ -81,7 +84,7 @@ def extract_restaurants(urls, numthread = 4):
 
 
 def main():
-    urls = get_urls_from_file('urls.txt')
+    urls = get_urls_from_file('testurls.txt')
     #url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
     #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
 
@@ -96,7 +99,8 @@ def main():
 
 
 def test():
-    url = "https://www.zomato.com/id/selangor/papparich-taman-seri-gombak/menu"
+    #url = "https://www.zomato.com/vi/santa-barbara-ca/los-agaves-1-santa-barbara"
+    url = "https://www.tripadvisor.com.sg/Restaurant_Review-g294265-d796940-Reviews-Summer_Pavilion-Singapore.html"
     extract_restaurant(url)
 
 if __name__ == '__main__':

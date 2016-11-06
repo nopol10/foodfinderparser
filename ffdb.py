@@ -109,7 +109,7 @@ def insert_restaurant_batch(restaurantList):
         insertStatement = 'INSERT INTO restaurants (restaurant_id, restaurant_name, country, web_rating, address, average_price, ' \
                           'source_website, food_type)' \
                           ' VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)'
-        print restaurant, "Added"
+        #print restaurant, "Added"
         cursor.execute(insertStatement, (name, country, rating, address, averagePrice, sourceSite, foodType))
 
 

@@ -19,12 +19,17 @@ class HgwParser(IParser.IParser):
 
     def extract_price(self):
         # res1 = (self.doc(".module-information meta[itemprop='priceRange']").next())("div[class='inner']")
-        res1 = (self.doc("meta[itemprop='priceRange']").next())
-        innertexts = res1.text().split()
-        if innertexts.__len__() > 0 and innertexts[2][0] == '$':
-            price = innertexts[2].split('$')
-            if price.__len__() > 1:
-                return float(price[1])
+        try:
+            res1 = (self.doc("meta[itemprop='priceRange']").next())
+            innertexts = res1.text().split()
+            if innertexts.__len__() > 0 and innertexts[2][0] == '$':
+                price = innertexts[2].split('$')
+                if price.__len__() > 1:
+                    return float(price[1])
+
+            return -1.0
+        except:
+            return -1.0
 
     def extract_foodtypes(self):
         resstring = ''
@@ -54,7 +59,7 @@ class HgwParser(IParser.IParser):
             vote = float(vote) / 5.0
             numvoter = int(numvoter)
         except:
-            return 0.0, 0
+            return -1.0, -1
         return vote, numvoter
 
     def extract_country(self):

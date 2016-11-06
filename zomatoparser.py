@@ -16,9 +16,8 @@ class ZomatoParser(IParser.IParser):
             return False
 
         res = self.doc("meta[property='og:type']")
-        for i in range(0, res.size()):
-            if res.attr("content") == "zomatocom:restaurant":
-                return True
+        if res.attr("content") == "zomatocom:restaurant":
+            return True
         return False
 
     def extract_price(self):
@@ -33,7 +32,7 @@ class ZomatoParser(IParser.IParser):
                 if price_str[i].isdigit():
                     price += price_str[i]
             return float(price)
-        return 0.0
+        return -1.0
 
     def extract_foodtypes(self):
         return self.doc("div[class='res-info-cuisines clearfix']").text()
@@ -55,7 +54,7 @@ class ZomatoParser(IParser.IParser):
             vote = float(vote) / 5.0
             numvoter = int(numvoter)
         except:
-            return 0.0, 0
+            return -1.0, -1
         return vote, numvoter
 
     def extract_country(self):
