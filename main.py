@@ -84,7 +84,7 @@ def extract_restaurants(urls, numthread = 4):
 
 
 def main():
-    urls = get_urls_from_file('testurls.txt')
+    urls = get_urls_from_file('urls.txt')
     #url = "http://www.hungrygowhere.com/singapore/arnold-s-fried-chicken-yishun/"
     #url = "http://www.hungrygowhere.com/singapore/928_yishun_laksa/"
 

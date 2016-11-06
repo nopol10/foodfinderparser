@@ -73,5 +73,4 @@ class TripAdvParser(IParser.IParser):
             country = sub.text() if sub.text() != "" else sub.attr("content")
             if country != "":
                 break
-        print country
         return country
